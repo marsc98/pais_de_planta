@@ -18,6 +18,7 @@ const Header = () => {
       {authContext?.authenticated && (
         <section className="paths">
           <a href="/parents">Pais da planta</a>
+          <a href="/create-plant">Nova plantinha</a>
           <button onClick={() => auth?.logout()}>Sair</button>
         </section>
       )}
@@ -31,6 +32,11 @@ const Header = () => {
             <li>
               <div>
                 <a href="/parents">Pais da planta</a>
+              </div>
+            </li>
+            <li>
+              <div>
+                <a href="/create-plant">Nova plantinha</a>
               </div>
             </li>
             <li>

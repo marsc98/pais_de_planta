@@ -6,8 +6,14 @@ export function useFamily() {
   return {
     getFamily: async () => {
       if (!firebase.auth().currentUser) return null;
-      const result = await collection
+
+      const user = await firebase
+        .firestore()
+        .collection("parent")
         .doc(firebase.auth().currentUser.email)
+        .get();
+      const result = await collection
+        .doc(user?.data()?.familyCode)
         .get();
       return result?.data() || null;
     },
@@ -26,6 +32,17 @@ export function useFamily() {
 
       const res = await collection.doc(uuid && uuid).get();
       return res.data();
+    },
+    getPlants: async (familyCode) => {
+      const family = await collection.doc(familyCode).get();
+      return family?.data()?.plants;
+    },
+    createPlant: async (familyCode, data) => {
+      const family = await collection.doc(familyCode).get();
+
+      const plants = family.data()?.plants;
+
+      await collection.doc(familyCode).update({plants: {...plants, [data.name]: {measurements: [{measurement: '0'}]}}});
     },
   };
 }

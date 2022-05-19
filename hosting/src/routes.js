@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import ParentsList from "./pages/ParentsList";
 import RegisterParent from "./pages/RegisterParent";
 import Family from './pages/Family';
+import NewPlant from './pages/NewPlant';
 
 const Routes = () => (
   <BrowserRouter>
@@ -17,6 +18,7 @@ const Routes = () => (
       <PrivateRoute path="/" exact component={Home} />
       <PrivateRoute path="/parents" exact component={ParentsList} />
       <PrivateRoute path="/parent-register" exact component={RegisterParent} />
+      <PrivateRoute path="/create-plant" exact component={NewPlant} />
     </Switch>
   </BrowserRouter>
 );

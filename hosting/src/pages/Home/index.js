@@ -16,14 +16,21 @@ import Flor3Sad from "../../assets/flor3-sad.png";
 import { FaArrowRight } from "react-icons/fa";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
-import { Title } from '../../components/Title';
+import { Title } from "../../components/Title";
+import { useFamily } from "../../data/hooks/useFamily";
+import { useParent } from "../../data/hooks/useParent";
 
 const Home = () => {
   const auth = useAuth();
   const authContext = useAuthContext();
   const history = useHistory();
+  const family = useFamily();
+
+  const [allFlowers, setAllFlowers] = useState(false);
 
   const [flower, setFlower] = useState(false);
+  const [measurements, setMeasurements] = useState([]);
+  const [flowerName, setFlowerName] = useState(false);
   const [sadFlower, setSadFlower] = useState(false);
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState({
@@ -36,24 +43,47 @@ const Home = () => {
 
   useEffect(() => {
     const num = Math.floor(Math.random() * 3);
-    const f = flowers.find((res, index) => index === num);
+    let f;
+    if (
+      allFlowers[flowerName]?.measurements[
+        allFlowers[flowerName]?.measurements?.length - 1
+      ].measurement <= 400 ||
+      allFlowers[flowerName]?.measurements[
+        allFlowers[flowerName]?.measurements?.length - 1
+      ].measurement > 600
+    ) {
+      f = sadFlowers.find((res, index) => index === num);
+    } else {
+      f = flowers.find((res, index) => index === num);
+    }
     setFlower(f);
+
+    const measurements = [];
+    allFlowers[flowerName]?.measurements.map((data, index) => {
+      if (index <= 588) measurements.push(data.measurement);
+    });
+    setMeasurements(measurements);
+  }, [flowerName]);
+
+  useEffect(() => {
+    family
+      .getPlants(authContext?.familyCode)
+      .then((plants) => setAllFlowers(plants))
+      .then(() => setFlowerName(Object.keys(allFlowers)[0]));
   }, []);
 
-  console.log(flower);
+  console.log(measurements);
 
   const firstCtx = document.getElementById("firstCtx");
   // const firstCtx = document.querySelector('#firstCtx').getContext('2d');
   // const secondCtx = document.getElementById('secondChart');
-
-  console.log(firstCtx);
 
   const data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
     datasets: [
       {
         label: "# of Votes",
-        data: [12, 19, 3, 5, 2, 3],
+        data: measurements,
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
@@ -91,23 +121,56 @@ const Home = () => {
   return (
     <Main>
       <section className="health">
+        <div className="setFlowerWrapper">
+          <div>
+            <Label green>
+              Escolha qual florzinha quer monitorar, agora você está com a:
+            </Label>
+            <select onClick={(e) => setFlowerName(e.target.value)}>
+              <option value={Object.keys(allFlowers)[0]}>
+                {Object.keys(allFlowers)[0]}
+              </option>
+              {Object.keys(allFlowers)?.map((flower) => {
+                return (
+                  <>
+                    <option value={flower}>{flower}</option>
+                  </>
+                );
+              })}
+            </select>
+          </div>
+        </div>
         <h3>
           Lembre-se de manter sua planta com nível de umidade entre: 400 e 600.
         </h3>
         <div className="levels">
           <div>
             <h2>Última medição:</h2>
-            <span>Umidade: +- 200</span>
+            <span>
+              Umidade: +-{" "}
+              {flowerName &&
+                allFlowers[flowerName]?.measurements[
+                  allFlowers[flowerName]?.measurements?.length - 1
+                ].measurement}
+            </span>
             <span>Luminosidade: +- 200</span>
           </div>
           <img src={flower} alt="imagem ilustrativa da saúde da planta" />
         </div>
         <section>
-          <div className="boardTitle"><Title>Última medição</Title></div>
+          <div className="boardTitle">
+            <Title>Última medição</Title>
+          </div>
           <div className="boardContent">
             <div>
               <h4>Umidade:</h4>
-              <h4>+-200</h4>
+              <h4>
+                +-
+                {flowerName &&
+                  allFlowers[flowerName]?.measurements[
+                    allFlowers[flowerName]?.measurements?.length - 1
+                  ].measurement}
+              </h4>
             </div>
             <div>
               <h4>Luz Solar:</h4>

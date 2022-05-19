@@ -3,20 +3,25 @@ import { Label } from "../../components/Label";
 import { Main, Parent } from "./styles";
 import { Link, useHistory } from "react-router-dom";
 import { Button } from "../../components/Button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Title } from "../../components/Title";
 import { useAuth } from "../../data/hooks/useAuth";
 import { useParent } from "../../data/hooks/useParent";
 import Loader from "../../components/Loader";
 import { CgAdd } from "react-icons/cg";
 import { IoMdArrowRoundBack } from "react-icons/io";
+import { useFamily } from '../../data/hooks/useFamily';
+import { useAuthContext } from '../../data/hooks/useAuthContext';
 
 const ParentsList = () => {
   const auth = useAuth();
   const parent = useParent();
   const history = useHistory();
+  const authContext = useAuthContext();
+  const family = useFamily();
 
   const [loading, setLoading] = useState(false);
+  const [parents, setParents] = useState();
   const [loaded, setLoaded] = useState({
     ok: false,
     error: false,
@@ -32,14 +37,18 @@ const ParentsList = () => {
     { name: "marco", phone: "999999999" },
   ];
 
-  const listMap = list.map((parent) => {
+  const listMap = parents?.map((parent) => {
     return (
       <Parent>
         <span>{parent?.name}</span>
-        <span>{parent?.phone}</span>
+        <span>{parent?.userName}</span>
       </Parent>
     );
   });
+
+  useEffect(() => {
+    family?.getFamily(authContext?.familyCode).then((res) => setParents(res?.parents))
+  },[])
 
   return (
     <Main>

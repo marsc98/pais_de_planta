@@ -40,6 +40,27 @@ export const Main = styled.div`
       display: none;
     }
 
+    .setFlowerWrapper {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        border: 1px dashed #759b81;
+        border-radius: 10px;
+        padding: 8px;
+
+        select {
+          border-bottom: 1px solid #759b81;
+          color: #759b81;
+          font-weight: 500;
+          font-size: 12px;
+        }
+        margin-bottom: 10px;
+      }
+    }
+
     .levels {
       width: 100%;
       max-width: 400px;
@@ -197,6 +218,16 @@ export const Main = styled.div`
         width: 100%;
         font-size: 18px;
         line-height: 21px;
+      }
+
+      .setFlowerWrapper {
+        div {
+          width: 80%;
+          margin-top: 20px;
+          select {
+            font-size: 19px;
+          }
+        }
       }
 
       .levels {

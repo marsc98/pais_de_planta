@@ -7,5 +7,10 @@ export const Label = styled.label`
   font-size: 19px;
   line-height: 21px;
 
-  color: #ffffff;
+  color: ${props => props.green ? '#cc724b' : '#ffffff'};
+
+  @media(max-width: 720px) {
+  font-size: ${props => props.green && '12px'};
+
+  }
 `;
