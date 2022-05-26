@@ -1,20 +1,17 @@
 import { Input } from "../../components/Input";
 import { Label } from "../../components/Label";
 import { Main } from "./styles";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { Button } from "../../components/Button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAuthContext } from "../../data/hooks/useAuthContext";
-import { useAuth } from "../../data/hooks/useAuth";
 import Loader from "../../components/Loader";
-import { useFamily } from '../../data/hooks/useFamily';
+import { useFamily } from "../../data/hooks/useFamily";
 
 const NewPlant = () => {
   const authContext = useAuthContext();
   const history = useHistory();
   const family = useFamily();
-
-  console.log(authContext)
 
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState({
@@ -35,7 +32,7 @@ const NewPlant = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await family?.createPlant(authContext?.familyCode,data);
+      await family?.createPlant(authContext?.familyCode, data);
       setLoaded({ ok: true, error: false });
       setTimeout(() => {
         setLoading(false);

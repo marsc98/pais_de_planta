@@ -4,7 +4,6 @@ import { BsCheckLg } from "react-icons/bs";
 import { BiErrorCircle } from "react-icons/bi";
 
 const Loader = (props) => {
-  console.log(props?.loaded)
   return (
     <Main>
       {props?.loaded?.ok && <BsCheckLg className="ok"/>}

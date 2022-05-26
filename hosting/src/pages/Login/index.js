@@ -13,8 +13,6 @@ const Login = () => {
   const authContext = useAuthContext();
   const history = useHistory();
 
-  console.log(authContext)
-
   const [loading, setLoading] = useState(false);
   const [loaded, setLoaded] = useState({
     ok: false,
@@ -35,17 +33,13 @@ const Login = () => {
     authContext?.authenticated && history.push("/");
   }, [authContext.authenticated]); // eslint-disable-line
 
-  console.log(data);
-
   async function handleSubmit(e) {
     e.preventDefault();
     setLoading(true);
     try {
       const d = await auth?.login(data);
-      console.log(d)
       setLoaded({ ok: true, error: false });
       setTimeout(() => {
-        // history.push("/home");
         setLoading(false);
       }, 1000);
     } catch (err) {

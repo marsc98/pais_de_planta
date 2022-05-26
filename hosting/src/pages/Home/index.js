@@ -1,12 +1,8 @@
-import { Input } from "../../components/Input";
 import { Label } from "../../components/Label";
 import { Main } from "./styles";
-import { Link, useHistory } from "react-router-dom";
-import { Button } from "../../components/Button";
+import { useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuthContext } from "../../data/hooks/useAuthContext";
-import { useAuth } from "../../data/hooks/useAuth";
-import Loader from "../../components/Loader";
 import Flor from "../../assets/flor.png";
 import FlorSad from "../../assets/flor-sad.png";
 import Flor2 from "../../assets/flor2.png";
@@ -18,10 +14,8 @@ import { Line } from "react-chartjs-2";
 import { Chart as ChartJS } from "chart.js/auto";
 import { Title } from "../../components/Title";
 import { useFamily } from "../../data/hooks/useFamily";
-import { useParent } from "../../data/hooks/useParent";
 
 const Home = () => {
-  const auth = useAuth();
   const authContext = useAuthContext();
   const history = useHistory();
   const family = useFamily();
@@ -31,12 +25,6 @@ const Home = () => {
   const [flower, setFlower] = useState(false);
   const [measurements, setMeasurements] = useState([]);
   const [flowerName, setFlowerName] = useState(false);
-  const [sadFlower, setSadFlower] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [loaded, setLoaded] = useState({
-    ok: false,
-    error: false,
-  });
 
   const flowers = [Flor, Flor2, Flor3];
   const sadFlowers = [FlorSad, Flor2Sad, Flor3Sad];
@@ -71,12 +59,6 @@ const Home = () => {
       .then((plants) => setAllFlowers(plants))
       .then(() => setFlowerName(Object.keys(allFlowers)[0]));
   }, []);
-
-  console.log(measurements);
-
-  const firstCtx = document.getElementById("firstCtx");
-  // const firstCtx = document.querySelector('#firstCtx').getContext('2d');
-  // const secondCtx = document.getElementById('secondChart');
 
   const data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -153,7 +135,15 @@ const Home = () => {
                   allFlowers[flowerName]?.measurements?.length - 1
                 ].measurement}
             </span>
-            <span>Luminosidade: +- 200</span>
+            <span>
+              Luminosidade:{" "}
+              {flowerName &&
+              allFlowers[flowerName]?.measurements[
+                allFlowers[flowerName]?.measurements?.length - 1
+              ].isIluminated
+                ? "Boa"
+                : "Não está boa"}
+            </span>
           </div>
           <img src={flower} alt="imagem ilustrativa da saúde da planta" />
         </div>
@@ -174,14 +164,21 @@ const Home = () => {
             </div>
             <div>
               <h4>Luz Solar:</h4>
-              <h4>OK</h4>
+              <h4>
+                {flowerName &&
+                allFlowers[flowerName]?.measurements[
+                  allFlowers[flowerName]?.measurements?.length - 1
+                ].isIluminated
+                  ? "Boa"
+                  : "Não está boa"}
+              </h4>
             </div>
           </div>
         </section>
         <h4>
           Atente-se aos níveis extremos de umidade. Quando o sensor indicar 200
           o nível de umidade está muito alto, quando a umidade estiver muito
-          baixa o sensor irá indicar um valor por volta de 1200.{" "}
+          baixa o sensor irá indicar um valor por volta de 1024.{" "}
         </h4>
       </section>
       <section className="graphicsWrapper">

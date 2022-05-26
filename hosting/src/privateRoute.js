@@ -4,7 +4,6 @@ import { Route, Redirect } from "react-router-dom";
 import { useAuthContext } from "./data/hooks/useAuthContext";
 const PrivateRoute = ({ component: RouteComponent, ...rest }) => {
   const { authenticated, loadingAuthState } = useAuthContext();
-  console.log(authenticated);
   if (loadingAuthState) {
     return (
       <div
