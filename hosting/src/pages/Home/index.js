@@ -35,10 +35,10 @@ const Home = () => {
     if (
       allFlowers[flowerName]?.measurements[
         allFlowers[flowerName]?.measurements?.length - 1
-      ].measurement <= 400 ||
+      ].measurement <= 60 ||
       allFlowers[flowerName]?.measurements[
         allFlowers[flowerName]?.measurements?.length - 1
-      ].measurement > 600
+      ].measurement > 90
     ) {
       f = sadFlowers.find((res, index) => index === num);
     } else {
@@ -57,8 +57,11 @@ const Home = () => {
     family
       .getPlants(authContext?.familyCode)
       .then((plants) => setAllFlowers(plants))
-      .then(() => setFlowerName(Object.keys(allFlowers)[0]));
   }, []);
+
+  useEffect(() => {
+    setFlowerName(Object.keys(allFlowers)[1])
+  }, [allFlowers])
 
   const data = {
     labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
@@ -106,12 +109,10 @@ const Home = () => {
         <div className="setFlowerWrapper">
           <div>
             <Label green>
-              Escolha qual florzinha quer monitorar, agora você está com a:
+              Escolha qual florzinha quer monitorar:
             </Label>
             <select onClick={(e) => setFlowerName(e.target.value)}>
-              <option value={Object.keys(allFlowers)[0]}>
-                {Object.keys(allFlowers)[0]}
-              </option>
+              <option/>
               {Object.keys(allFlowers)?.map((flower) => {
                 return (
                   <>
@@ -120,10 +121,11 @@ const Home = () => {
                 );
               })}
             </select>
+            <br/>
           </div>
         </div>
         <h3>
-          Lembre-se de manter sua planta com nível de umidade entre: 400 e 600.
+          {flowerName} deve manter níveis de humidade entre 60% e 80%.
         </h3>
         <div className="levels">
           <div>
@@ -133,7 +135,7 @@ const Home = () => {
               {flowerName &&
                 allFlowers[flowerName]?.measurements[
                   allFlowers[flowerName]?.measurements?.length - 1
-                ].measurement}
+                ].measurement}%
             </span>
             <span>
               Luminosidade:{" "}
@@ -159,7 +161,7 @@ const Home = () => {
                 {flowerName &&
                   allFlowers[flowerName]?.measurements[
                     allFlowers[flowerName]?.measurements?.length - 1
-                  ].measurement}
+                  ].measurement}%
               </h4>
             </div>
             <div>
@@ -176,9 +178,9 @@ const Home = () => {
           </div>
         </section>
         <h4>
-          Atente-se aos níveis extremos de umidade. Quando o sensor indicar 200
-          o nível de umidade está muito alto, quando a umidade estiver muito
-          baixa o sensor irá indicar um valor por volta de 1024.{" "}
+          Atente-se aos níveis extremos de umidade. Quando o sensor indicar 90%
+          de humidade, o nível de umidade está muito alto, quando a umidade estiver muito
+          baixa o sensor irá indicar um valor por volta de 60%.{" "}
         </h4>
       </section>
       <section className="graphicsWrapper">

@@ -38,10 +38,18 @@ const RegisterParent = () => {
       <section className="telegram">
         <h3>
           As notificações seram enviadas via telegram, para recebe-lás inicie
-          uma conversa com nosso bot e aparte em start.
+          uma conversa com nosso bot e aparte em start. Ele pedirá um código 
+          que já está na sua área de transferência, ou seja, já demos crtl c,
+          é só você dar crtl v lá no telegram quando ele pedir o código da família!.
         </h3>
         <a href="https://t.me/pais_de_plantas_bot?start=/start">
-          <Button type="button" white>
+          <Button
+            onClick={() => {
+              navigator.clipboard.writeText(authContext?.familyCode);
+            }}
+            type="button"
+            white
+          >
             <FaTelegram className="telegramIcon" /> Chame o bot
           </Button>
         </a>
