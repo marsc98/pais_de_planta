@@ -12,9 +12,7 @@ export function useFamily() {
         .collection("parent")
         .doc(firebase.auth().currentUser.email)
         .get();
-      const result = await collection
-        .doc(user?.data()?.familyCode)
-        .get();
+      const result = await collection.doc(user?.data()?.familyCode).get();
       return result?.data() || null;
     },
     createFamily: async (data) => {
@@ -35,14 +33,36 @@ export function useFamily() {
     },
     getPlants: async (familyCode) => {
       const family = await collection.doc(familyCode).get();
-      return family?.data()?.plants;
+      const plants = family?.data()?.plants;
+
+      let newMeasurements = [];
+
+      Object.keys(plants).map((plant) => {
+        newMeasurements = plants[plant]?.measurements?.map((measurement) => {
+          return {
+            date: measurement?.date?.toDate(),
+            measurement: measurement?.measurement,
+            isIluminated: measurement?.isIluminated,
+          };
+        });
+
+        plants[plant].measurements = newMeasurements;
+      });
+      return plants;
     },
     createPlant: async (familyCode, data) => {
       const family = await collection.doc(familyCode).get();
 
       const plants = family.data()?.plants;
 
-      await collection.doc(familyCode).update({plants: {...plants, [data.name]: {measurements: [{measurement: '0'}]}}});
+      await collection
+        .doc(familyCode)
+        .update({
+          plants: {
+            ...plants,
+            [data.name]: { measurements: [{ measurement: "0" }] },
+          },
+        });
     },
   };
 }

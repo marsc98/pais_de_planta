@@ -47,8 +47,10 @@ const Home = () => {
     setFlower(f);
 
     const measurements = [];
+    const allMeasurements = measurements?.length - 1;
+    const measurementsRange = allMeasurements - 500;
     allFlowers[flowerName]?.measurements.map((data, index) => {
-      if (index <= 588) measurements.push(data.measurement);
+      if (index > measurementsRange) measurements.push(data);
     });
     setMeasurements(measurements);
   }, [flowerName]);
@@ -56,19 +58,52 @@ const Home = () => {
   useEffect(() => {
     family
       .getPlants(authContext?.familyCode)
-      .then((plants) => setAllFlowers(plants))
+      .then((plants) => setAllFlowers(plants));
   }, []);
 
   useEffect(() => {
-    setFlowerName(Object.keys(allFlowers)[1])
-  }, [allFlowers])
+    setFlowerName(Object.keys(allFlowers)[1]);
+  }, [allFlowers]);
 
-  const data = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+  const dataH = {
+    labels: measurements.map((data) => {
+      const date = new Date(data?.date);
+      return date?.getDate()+"/"+date.getMonth();
+    }),
     datasets: [
       {
-        label: "# of Votes",
-        data: measurements,
+        label: "medidas",
+        data: measurements.map((data) => data.measurement),
+        backgroundColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const dataI = {
+    labels: measurements.map((data) => {
+      const date = new Date(data?.date);
+      return date?.getDate()+"/"+date.getMonth();
+    }),
+    datasets: [
+      {
+        label: "medidas",
+        data: measurements.map((data) => data.isIluminated),
         backgroundColor: [
           "rgba(255, 99, 132, 1)",
           "rgba(54, 162, 235, 1)",
@@ -98,7 +133,7 @@ const Home = () => {
       },
       title: {
         display: true,
-        text: "Chart.js Line Chart",
+        text: "Gráfico da humidade",
       },
     },
   };
@@ -108,11 +143,9 @@ const Home = () => {
       <section className="health">
         <div className="setFlowerWrapper">
           <div>
-            <Label green>
-              Escolha qual florzinha quer monitorar:
-            </Label>
+            <Label green>Escolha qual florzinha quer monitorar:</Label>
             <select onClick={(e) => setFlowerName(e.target.value)}>
-              <option/>
+              <option />
               {Object.keys(allFlowers)?.map((flower) => {
                 return (
                   <>
@@ -121,12 +154,10 @@ const Home = () => {
                 );
               })}
             </select>
-            <br/>
+            <br />
           </div>
         </div>
-        <h3>
-          {flowerName} deve manter níveis de humidade entre 60% e 80%.
-        </h3>
+        <h3>{flowerName} deve manter níveis de humidade entre 60% e 80%.</h3>
         <div className="levels">
           <div>
             <h2>Última medição:</h2>
@@ -135,7 +166,8 @@ const Home = () => {
               {flowerName &&
                 allFlowers[flowerName]?.measurements[
                   allFlowers[flowerName]?.measurements?.length - 1
-                ].measurement}%
+                ].measurement}
+              %
             </span>
             <span>
               Luminosidade:{" "}
@@ -161,7 +193,8 @@ const Home = () => {
                 {flowerName &&
                   allFlowers[flowerName]?.measurements[
                     allFlowers[flowerName]?.measurements?.length - 1
-                  ].measurement}%
+                  ].measurement}
+                %
               </h4>
             </div>
             <div>
@@ -179,8 +212,8 @@ const Home = () => {
         </section>
         <h4>
           Atente-se aos níveis extremos de umidade. Quando o sensor indicar 90%
-          de humidade, o nível de umidade está muito alto, quando a umidade estiver muito
-          baixa o sensor irá indicar um valor por volta de 60%.{" "}
+          de humidade, o nível de umidade está muito alto, quando a umidade
+          estiver muito baixa o sensor irá indicar um valor por volta de 60%.{" "}
         </h4>
       </section>
       <section className="graphicsWrapper">
@@ -192,13 +225,13 @@ const Home = () => {
           Acompanhamento da umidade dos últimos 7 dias:
         </h3>
         <section className="graphic">
-          <Line options={options} data={data} />
+          <Line options={options} data={dataH} />
         </section>
         <h3 className="graphTitle">
           Acompanhamento da luminosidade dos últimos 7 dias:
         </h3>
         <section className="graphic">
-          <Line options={options} data={data} />
+          <Line options={options} data={dataI} />
         </section>
       </section>
     </Main>
